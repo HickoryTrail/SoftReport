@@ -1,0 +1,188 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:lfai:export:report:v1",
+  "title": "LFAI Export Report Schema",
+  "description": "导出报告数据契约。Core 在 export 阶段将批阅结果按此结构组装为 JSON，传递给外部导出程序（LFAI.Export.Host）用于生成最终报告（HTML/PDF）。元数据字段与 core 层 student/exam 持久化字段对齐；报告正文从 GradingResultDocument + TranslatedResultDocument 合并而来。",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "type": "integer",
+      "const": 1,
+      "description": "本契约版本号。递增表示不兼容变更；外部程序据此选择解析器。"
+    },
+    "meta": {
+      "type": "object",
+      "description": "报告元数据——考生信息与考试信息，来源于 submissions.students 和 exams。",
+      "properties": {
+        "studentName": {
+          "type": "string",
+          "description": "考生姓名，来自 students.studentName"
+        },
+        "className": {
+          "type": "string",
+          "description": "班级，来自 students.className；可能为 null（名单未提供）"
+        },
+        "studentCode": {
+          "type": "string",
+          "description": "考号，来自 students.studentCode；考前导入或人工复核设置"
+        },
+        "examDate": {
+          "type": "string",
+          "format": "date",
+          "description": "考试日期（YYYY-MM-DD），取 exam.createdAt 的日期部分"
+        },
+        "examName": {
+          "type": "string",
+          "description": "考试名称，来自 exams.name"
+        }
+      },
+      "required": [
+        "studentName",
+        "studentCode",
+        "examDate",
+        "examName"
+      ]
+    },
+    "report": {
+      "type": "object",
+      "description": "报告正文，包含两篇作文（应用文 AW、读后续写 CW）的完整批阅结果。",
+      "properties": {
+        "aw": {
+          "type": "object",
+          "description": "应用文（Application Writing）批阅结果",
+          "properties": {
+            "overallEvaluation": {
+              "type": "string",
+              "description": "整体评价。对应 AwContentResult.Comment，已由翻译流程转为中文。"
+            },
+            "grammarCorrection": {
+              "type": "string",
+              "description": "语法改错。对应 AwGrammarResult.Text；语法批阅结果原文（English），不翻译。"
+            },
+            "sentenceImprovements": {
+              "type": "array",
+              "description": "句子提升列表。对应 AwContentResult.AdvancedExpression。每项包含原句、优化句及理由。",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "original": {
+                    "type": "string",
+                    "description": "原句。学生原文中的待优化表达。"
+                  },
+                  "optimized": {
+                    "type": "string",
+                    "description": "优化句。AI 提供的升级版本。"
+                  },
+                  "reason": {
+                    "type": "string",
+                    "description": "优化理由。已由翻译流程转为中文，说明为何此表达更好。"
+                  }
+                },
+                "required": ["original", "optimized", "reason"]
+              }
+            },
+            "optimizedEssay": {
+              "type": "object",
+              "description": "习作整篇优化及说明。对应 AwContentResult.OptimizedEssay。",
+              "properties": {
+                "essay": {
+                  "type": "string",
+                  "description": "优化后的整篇应用文正文。"
+                },
+                "explanation": {
+                  "type": "string",
+                  "description": "优化说明。对应 OptimizedEssay.Reason，已翻译为中文。"
+                }
+              },
+              "required": ["essay", "explanation"]
+            }
+          },
+          "required": [
+            "overallEvaluation",
+            "grammarCorrection",
+            "sentenceImprovements",
+            "optimizedEssay"
+          ]
+        },
+        "cw": {
+          "type": "object",
+          "description": "读后续写（Continuation Writing）批阅结果",
+          "properties": {
+            "overallEvaluation": {
+              "type": "string",
+              "description": "整体评价。对应 CwContentResult.Comment，已由翻译流程转为中文。"
+            },
+            "grammarCorrection": {
+              "type": "object",
+              "description": "语法改错。对应 CwGrammarResult.Para1 + Para2；读后续写分两段改错。",
+              "properties": {
+                "para1": {
+                  "type": "string",
+                  "description": "第一段语法批阅结果。"
+                },
+                "para2": {
+                  "type": "string",
+                  "description": "第二段语法批阅结果。"
+                }
+              },
+              "required": ["para1", "para2"]
+            },
+            "sentenceImprovements": {
+              "type": "array",
+              "description": "句子提升列表。对应 CwContentResult.AdvancedExpression。",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "original": {
+                    "type": "string",
+                    "description": "原句。"
+                  },
+                  "optimized": {
+                    "type": "string",
+                    "description": "优化句。"
+                  },
+                  "reason": {
+                    "type": "string",
+                    "description": "优化理由（已翻译）。"
+                  }
+                },
+                "required": ["original", "optimized", "reason"]
+              }
+            },
+            "optimizedEssay": {
+              "type": "object",
+              "description": "习作整篇优化及说明。对应 CwContentResult.OptimizedEssay；读后续写分两段优化。",
+              "properties": {
+                "para1": {
+                  "type": "string",
+                  "description": "优化后的第一段正文。"
+                },
+                "para2": {
+                  "type": "string",
+                  "description": "优化后的第二段正文。"
+                },
+                "explanation": {
+                  "type": "string",
+                  "description": "优化说明。对应 OptimizedEssay.Reason，已翻译为中文。"
+                }
+              },
+              "required": ["para1", "para2", "explanation"]
+            }
+          },
+          "required": [
+            "overallEvaluation",
+            "grammarCorrection",
+            "sentenceImprovements",
+            "optimizedEssay"
+          ]
+        }
+      },
+      "required": ["aw", "cw"]
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "meta",
+    "report"
+  ]
+}

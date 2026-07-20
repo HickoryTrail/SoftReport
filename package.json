@@ -1,0 +1,23 @@
+{
+  "name": "softreport",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && powershell -Command \"if (Test-Path 'dist/fonts') { Remove-Item -Recurse -Force 'dist/fonts' }; New-Item -ItemType Directory -Force -Path 'dist/fonts' | Out-Null; Copy-Item 'fonts/HarmonyOS_Sans_SC_Regular.ttf','fonts/HarmonyOS_Sans_SC_Medium.ttf','fonts/HarmonyOS_Sans_SC_Bold.ttf' 'dist/fonts/'\"",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.19",
+    "@types/react-dom": "^18.3.6",
+    "@vitejs/plugin-react": "^6.0.3",
+    "typescript": "^5.7.3",
+    "vite": "^6.3.2",
+    "vite-plugin-singlefile": "^2.3.3"
+  }
+}
