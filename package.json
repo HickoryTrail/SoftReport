@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && powershell -Command \"if (Test-Path 'dist/fonts') { Remove-Item -Recurse -Force 'dist/fonts' }; New-Item -ItemType Directory -Force -Path 'dist/fonts' | Out-Null; Copy-Item 'fonts/HarmonyOS_Sans_SC_Regular.ttf','fonts/HarmonyOS_Sans_SC_Medium.ttf','fonts/HarmonyOS_Sans_SC_Bold.ttf' 'dist/fonts/'\"",
+    "build": "vite build && node scripts/copy-fonts.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

@@ -1,0 +1,50 @@
+name: Build SoftReport
+
+on:
+  push:
+    branches:
+      - "**"
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build production artifact
+        run: npm run build
+
+      - name: Verify production artifact
+        shell: bash
+        run: |
+          test -f dist/index.html
+          test -f dist/fonts/HarmonyOS_Sans_SC_Regular.ttf
+          test -f dist/fonts/HarmonyOS_Sans_SC_Medium.ttf
+          test -f dist/fonts/HarmonyOS_Sans_SC_Bold.ttf
+
+      - name: Upload dist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: softreport-dist-${{ github.sha }}
+          path: dist/
+          if-no-files-found: error
+          retention-days: 14
