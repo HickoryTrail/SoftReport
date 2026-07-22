@@ -315,11 +315,8 @@ body {
 .essay-header {
   padding: 16px 24px;
   background: linear-gradient(135deg, var(--clr-primary) 0%, var(--clr-primary-dark) 100%);
+  border-radius: var(--radius-card) var(--radius-card) 0 0;
   position: relative;
-}
-
-.essay-header.motion-reveal {
-  transform: translate3d(0, 12px, 0);
 }
 
 .essay-header::after {
