@@ -1,37 +1,54 @@
 /* ============================================
    SoftReport — 英语作文批阅报告
-   样式: Soft Modern UI / 紫色 / 紧凑卡片
+   样式: Soft UI Evolution / 紫色 / SaaS 现代风格
    包含 @media print
    ============================================ */
 
 /* ---- CSS Custom Properties ---- */
 :root {
+  /* Purple brand colors (preserved) */
   --clr-primary: #7C3AED;
   --clr-primary-light: #A78BFA;
   --clr-primary-dark: #5B21B6;
   --clr-secondary: #8B5CF6;
-  --clr-bg: #F5F3FF;
+
+  /* Soft UI surfaces */
+  --clr-bg: linear-gradient(135deg, #FAF5FF 0%, #F5F3FF 100%);
   --clr-surface: #FFFFFF;
+  --clr-surface-tint: #FAFAFE;
+  --clr-panel: #F9F8FC;
   --clr-muted: #EDE9FE;
   --clr-border: #E0E7FF;
+
+  /* Text */
   --clr-text: #1E1B4B;
   --clr-text-secondary: #6B7280;
+
+  /* Diff colors (preserved exactly) */
   --clr-diff-del-bg: #FEE2E2;
   --clr-diff-del-text: #DC2626;
   --clr-diff-ins-bg: #D1FAE5;
   --clr-diff-ins-text: #059669;
+
+  /* Semantic */
   --clr-warning: #F59E0B;
   --clr-error: #EF4444;
 
+  /* Typography */
   --font-body: "HarmonyOS Sans SC", system-ui, -apple-system, sans-serif;
   --font-heading: "Crimson Pro", "HarmonyOS Sans SC", serif;
 
-  --radius-card: 12px;
-  --radius-section: 8px;
+  /* Radii - Soft UI style */
+  --radius-card: 16px;
+  --radius-section: 12px;
   --radius-tag: 6px;
+  --radius-pill: 999px;
 
-  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.06);
-  --shadow-card-hover: 0 2px 8px rgba(124, 58, 237, 0.08);
+  /* Shadows - Soft layered */
+  --shadow-soft: 0 2px 8px rgba(124, 58, 237, 0.04), 0 1px 3px rgba(124, 58, 237, 0.06);
+  --shadow-card: 0 4px 16px rgba(124, 58, 237, 0.06), 0 2px 6px rgba(124, 58, 237, 0.08);
+  --shadow-panel: 0 1px 4px rgba(124, 58, 237, 0.03);
+  --shadow-hover: 0 6px 20px rgba(124, 58, 237, 0.10), 0 3px 8px rgba(124, 58, 237, 0.12);
 }
 
 /* ---- Reset ---- */
@@ -68,7 +85,6 @@ body {
 
 .empty-card {
   background: var(--clr-surface);
-  border: 1px solid var(--clr-border);
   border-radius: var(--radius-card);
   padding: 48px 40px;
   max-width: 480px;
@@ -103,17 +119,34 @@ body {
 .report-container {
   max-width: 960px;
   margin: 0 auto;
-  padding: 32px 24px 48px;
+  padding: 28px 20px 40px;
 }
 
-/* ---- Report Header ---- */
+/* ---- Report Header (Hero-style banner) ---- */
 .report-header {
-  margin-bottom: 28px;
+  background: linear-gradient(135deg, rgba(250, 245, 255, 0.9) 0%, rgba(255, 255, 255, 0.95) 100%);
+  border-radius: var(--radius-card);
+  padding: 24px 28px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+}
+
+.report-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--clr-primary) 0%, var(--clr-primary-light) 100%);
 }
 
 .report-title {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .title-en {
@@ -123,6 +156,7 @@ body {
   font-size: 26px;
   color: var(--clr-primary);
   letter-spacing: 0.02em;
+  text-shadow: 0 2px 4px rgba(124, 58, 237, 0.08);
 }
 
 .title-zh {
@@ -131,7 +165,7 @@ body {
   font-weight: 400;
   font-size: 14px;
   color: var(--clr-text-secondary);
-  margin-top: 2px;
+  margin-top: 4px;
 }
 
 .meta-badges {
@@ -144,13 +178,15 @@ body {
 .meta-badge {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   font-size: 12px;
   font-weight: 500;
   color: var(--clr-primary-dark);
-  background: var(--clr-muted);
-  padding: 4px 12px;
-  border-radius: 20px;
+  background: rgba(237, 233, 254, 0.6);
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  box-shadow: 0 1px 3px rgba(124, 58, 237, 0.06);
+  backdrop-filter: blur(4px);
 }
 
 .badge-dot {
@@ -158,28 +194,45 @@ body {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--clr-primary-light);
+  background: var(--clr-primary);
   flex-shrink: 0;
+  box-shadow: 0 0 4px rgba(124, 58, 237, 0.4);
 }
 
 .badge-label {
   font-weight: 700;
   color: var(--clr-primary);
-  margin-right: 1px;
+  margin-right: 2px;
 }
+
 /* ---- Essay Report Card ---- */
 .essay-report {
   background: var(--clr-surface);
-  border: 1px solid var(--clr-border);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-card);
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   overflow: hidden;
+  transition: box-shadow 250ms ease;
+}
+
+.essay-report:hover {
+  box-shadow: var(--shadow-hover);
 }
 
 .essay-header {
-  padding: 0 20px;
-  background: linear-gradient(135deg, var(--clr-primary), var(--clr-primary-dark));
+  padding: 16px 24px;
+  background: linear-gradient(135deg, var(--clr-primary) 0%, var(--clr-primary-dark) 100%);
+  position: relative;
+}
+
+.essay-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
 }
 
 .essay-title {
@@ -187,46 +240,67 @@ body {
   font-size: 18px;
   font-weight: 700;
   color: #fff;
-  padding: 14px 0;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.02em;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
-/* ---- Section ---- */
+/* ---- Section (no borders, use spacing + panels) ---- */
 .section {
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--clr-muted);
+  padding: 18px 24px;
 }
 
 .section:last-child {
-  border-bottom: none;
+  padding-bottom: 22px;
 }
 
 .section-title {
   font-size: 15px;
   font-weight: 700;
   color: var(--clr-primary-dark);
-  margin-bottom: 10px;
-  padding-bottom: 6px;
-  border-bottom: 2px solid var(--clr-muted);
+  margin-bottom: 12px;
+  padding-left: 12px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-/* ---- Overall Evaluation ---- */
+/* Left accent bar */
+.section-title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 18px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--clr-primary) 0%, var(--clr-primary-light) 100%);
+  box-shadow: 0 0 8px rgba(124, 58, 237, 0.3);
+}
+
+/* ---- Overall Evaluation (tinted panel) ---- */
 .evaluation-text {
   font-size: 14px;
   line-height: 1.7;
   color: var(--clr-text);
+  background: var(--clr-panel);
+  padding: 14px 16px;
+  border-radius: var(--radius-section);
+  box-shadow: var(--shadow-panel);
 }
 
 /* ---- Grammar Correction (Diff) ---- */
 .diff-text {
   font-size: 14px;
   line-height: 1.8;
-  padding: 12px 16px;
-  background: #FAFAFA;
-  border: 1px solid var(--clr-muted);
+  padding: 14px 18px;
+  background: var(--clr-surface-tint);
   border-radius: var(--radius-section);
+  box-shadow: var(--shadow-panel);
 }
 
+/* Diff markup - preserve exact styling */
 .diff-text em {
   color: var(--clr-diff-del-text);
   text-decoration: line-through;
@@ -252,51 +326,65 @@ body {
 
 .diff-para .diff-label,
 .optimized-para .para-label {
-  display: inline-block;
-  font-size: 12px;
-  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 600;
   color: var(--clr-primary);
   background: var(--clr-muted);
-  padding: 2px 10px;
-  border-radius: var(--radius-tag);
-  margin-bottom: 6px;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  margin-bottom: 8px;
+  box-shadow: 0 1px 2px rgba(124, 58, 237, 0.08);
 }
 
 /* ---- Sentence Improvements ---- */
 .improvement-list {
   list-style: none;
   counter-reset: imp-counter;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .improvement-item {
   counter-increment: imp-counter;
-  padding: 12px 14px;
-  margin-bottom: 10px;
-  background: #FAFAFA;
-  border: 1px solid var(--clr-muted);
+  padding: 14px 16px 14px 16px;
+  background: var(--clr-surface);
   border-radius: var(--radius-section);
   position: relative;
+  box-shadow: var(--shadow-panel);
+  transition: box-shadow 200ms ease, transform 200ms ease;
+}
+
+.improvement-item:hover {
+  box-shadow: 0 3px 10px rgba(124, 58, 237, 0.08);
+  transform: translateY(-1px);
 }
 
 .improvement-item::before {
-  content: "#" counter(imp-counter);
+  content: counter(imp-counter);
   position: absolute;
-  top: 8px;
-  right: 10px;
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--clr-text-secondary);
-}
-
-.improvement-item:last-child {
-  margin-bottom: 0;
+  top: 10px;
+  right: 12px;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--clr-primary);
+  background: var(--clr-muted);
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(124, 58, 237, 0.12);
 }
 
 .improvement-row {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   align-items: baseline;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 .improvement-row:last-child {
@@ -305,14 +393,15 @@ body {
 
 .improvement-label {
   flex-shrink: 0;
-  font-size: 11px;
-  font-weight: 500;
-  color: #fff;
-  background: var(--clr-primary);
-  padding: 1px 8px;
-  border-radius: var(--radius-tag);
-  min-width: 32px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--clr-primary-dark);
+  background: rgba(237, 233, 254, 0.8);
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  min-width: 36px;
   text-align: center;
+  box-shadow: 0 1px 2px rgba(124, 58, 237, 0.08);
 }
 
 .improvement-original {
@@ -339,7 +428,7 @@ body {
 .optimized-body {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 
 .optimized-paragraphs {
@@ -354,6 +443,10 @@ body {
   color: var(--clr-text);
   text-align: justify;
   white-space: pre-line;
+  background: var(--clr-surface-tint);
+  padding: 14px 16px;
+  border-radius: var(--radius-section);
+  box-shadow: var(--shadow-panel);
 }
 
 .optimized-para {
@@ -362,17 +455,21 @@ body {
 }
 
 .revision-note {
-  background: var(--clr-muted);
+  background: linear-gradient(135deg, rgba(237, 233, 254, 0.4) 0%, rgba(245, 243, 255, 0.6) 100%);
   border-radius: var(--radius-section);
-  padding: 12px 16px;
+  padding: 14px 18px;
+  border-left: 3px solid var(--clr-primary-light);
+  box-shadow: var(--shadow-panel);
 }
 
 .revision-note-label {
   display: inline-block;
-  font-size: 12px;
-  font-weight: 500;
+  font-size: 11px;
+  font-weight: 600;
   color: var(--clr-primary-dark);
   margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 
 .revision-note p {
@@ -387,6 +484,7 @@ body {
   padding: 16px;
   font-size: 12px;
   color: var(--clr-text-secondary);
+  opacity: 0.7;
 }
 
 /* ============================================
@@ -403,7 +501,7 @@ body {
   }
 
   body {
-    background: white;
+    background: white !important;
     color: black;
   }
 
@@ -417,74 +515,136 @@ body {
     margin: 0;
   }
 
+  /* Header - simplified for print */
   .report-header {
-    margin-bottom: 20pt;
-  }
-
-  .title-en {
-    font-size: 20pt;
-    color: #5B21B6;
-  }
-
-  .title-zh {
-    font-size: 11pt;
-  }
-
-  .meta-badge {
-    font-size: 9pt;
-    background: #F0EFFF;
-    color: #4C1D95;
-    border: 1px solid #DDD6FE;
-  }
-
-  .badge-dot {
-    background: #7C3AED;
-  }
-
-
-  .badge-label {
-    color: #5B21B6;
-  }
-  .essay-report {
+    background: #FAFAFE !important;
     box-shadow: none;
-    border: 1px solid #ccc;
+    border: 0.5pt solid #E0E7FF;
     border-radius: 6pt;
-    margin-bottom: 0;
-
-  }
-
-  /* CW starts on new page */
-
-  .essay-header {
-    background: #7C3AED !important;
+    padding: 16pt 20pt;
+    margin-bottom: 16pt;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
 
-  .essay-title {
-    font-size: 14pt;
-    color: white !important;
+  .report-header::before {
+    background: #7C3AED !important;
+    height: 2pt;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 
+  .title-en {
+    font-size: 18pt;
+    color: #5B21B6 !important;
+    text-shadow: none;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .title-zh {
+    font-size: 10pt;
+  }
+
+  .meta-badge {
+    font-size: 8.5pt;
+    background: #F5F3FF !important;
+    color: #4C1D95 !important;
+    border: 0.5pt solid #E0E7FF;
+    box-shadow: none;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .badge-dot {
+    background: #7C3AED !important;
+    box-shadow: none;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .badge-label {
+    color: #5B21B6 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Essay cards */
+  .essay-report {
+    box-shadow: none;
+    border: 0.5pt solid #D1D5DB;
+    border-radius: 4pt;
+    margin-bottom: 12pt;
+  }
+
+  .essay-report:hover {
+    box-shadow: none;
+    transform: none;
+  }
+
+  .essay-header {
+    background: linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%) !important;
+    padding: 10pt 16pt;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .essay-header::after {
+    display: none;
+  }
+
+  .essay-title {
+    font-size: 13pt;
+    color: white !important;
+    text-shadow: none;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Sections */
   .section {
-    padding: 12pt 16pt;
+    padding: 10pt 14pt;
+  }
+
+  .section:last-child {
+    padding-bottom: 12pt;
   }
 
   .section-title {
-    font-size: 12pt;
-    border-bottom-color: #ddd;
+    font-size: 11.5pt;
+    padding-left: 10pt;
+    margin-bottom: 8pt;
   }
 
+  .section-title::before {
+    width: 3pt;
+    height: 14pt;
+    background: #7C3AED !important;
+    box-shadow: none;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Panels - subtle backgrounds for print */
   .evaluation-text {
-    font-size: 10.5pt;
+    font-size: 10pt;
+    background: #FAFAFE !important;
+    border: 0.5pt solid #E5E7EB;
+    box-shadow: none;
+    padding: 10pt 12pt;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 
   /* Diff — preserve colors + add borders for B&W */
   .diff-text {
-    font-size: 10pt;
-    background: #F9F9F9;
-    border: 0.5pt solid #ddd;
-    padding: 8pt 12pt;
+    font-size: 9.5pt;
+    background: #FAFAFE !important;
+    border: 0.5pt solid #E5E7EB;
+    box-shadow: none;
+    padding: 10pt 14pt;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 
   .diff-text em {
@@ -505,60 +665,91 @@ body {
 
   .diff-label,
   .para-label {
-    font-size: 9pt;
+    font-size: 8.5pt;
     background: #EDE9FE !important;
+    color: #5B21B6 !important;
+    box-shadow: none;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
 
+  /* Improvements */
   .improvement-item {
-    background: #FAFAFA;
-    border: 0.5pt solid #ddd;
-    padding: 8pt 10pt;
+    background: #FAFAFE !important;
+    border: 0.5pt solid #E5E7EB;
+    box-shadow: none;
+    padding: 10pt 12pt;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
 
+  .improvement-item:hover {
+    box-shadow: none;
+    transform: none;
   }
 
   .improvement-item::before {
-    font-size: 9pt;
+    font-size: 8pt;
+    width: 18pt;
+    height: 18pt;
+    background: #EDE9FE !important;
+    color: #5B21B6 !important;
+    box-shadow: none;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 
   .improvement-label {
     font-size: 8pt;
-    background: #7C3AED !important;
-    color: white !important;
+    background: #EDE9FE !important;
+    color: #5B21B6 !important;
+    box-shadow: none;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
 
   .improvement-original {
-    font-size: 10pt;
+    font-size: 9.5pt;
   }
 
   .improvement-optimized {
-    font-size: 10pt;
+    font-size: 9.5pt;
   }
 
   .improvement-reason {
-    font-size: 10pt;
+    font-size: 9.5pt;
   }
 
+  /* Optimized essay */
   .essay-paragraph {
-    font-size: 10.5pt;
-  }
-
-  .revision-note {
-    background: #F5F3FF !important;
-    border: 0.5pt solid #DDD6FE;
+    font-size: 10pt;
+    background: #FAFAFE !important;
+    border: 0.5pt solid #E5E7EB;
+    box-shadow: none;
+    padding: 10pt 12pt;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
 
+  .revision-note {
+    background: #F5F3FF !important;
+    border-left: 2pt solid #A78BFA;
+    box-shadow: none;
+    padding: 10pt 14pt;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .revision-note-label {
+    font-size: 8.5pt;
+  }
+
   .revision-note p {
-    font-size: 10pt;
+    font-size: 9.5pt;
   }
 
   .report-footer {
-    font-size: 9pt;
-    color: #999;
+    font-size: 8.5pt;
+    color: #6B7280;
   }
 }
