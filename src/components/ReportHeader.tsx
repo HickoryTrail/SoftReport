@@ -24,6 +24,9 @@ export function ReportHeader({ meta }: { meta: ReportMeta }) {
         <MetaBadge label="日期" text={meta.examDate} />
         <MetaBadge label="考试" text={meta.examName} />
       </div>
+      <p className="reviewed-by">
+        由 <strong>LinguaForge</strong> 批阅
+      </p>
     </header>
   );
 }
