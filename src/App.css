@@ -49,6 +49,12 @@
   --shadow-card: 0 4px 16px rgba(124, 58, 237, 0.06), 0 2px 6px rgba(124, 58, 237, 0.08);
   --shadow-panel: 0 1px 4px rgba(124, 58, 237, 0.03);
   --shadow-hover: 0 6px 20px rgba(124, 58, 237, 0.10), 0 3px 8px rgba(124, 58, 237, 0.12);
+
+  /* Motion tokens — shared by the opening and scroll-reveal sequences. */
+  --motion-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-ease-soft: cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-duration-enter: 420ms;
+  --motion-duration-fast: 220ms;
 }
 
 /* ---- Reset ---- */
@@ -74,6 +80,24 @@ body {
   background: var(--clr-bg);
 }
 
+/* ---- Motion system ----
+   Only opacity and transform are animated: no layout reflow while scrolling.
+   JavaScript adds .is-revealed once; the animation therefore never repeats. */
+.motion-reveal {
+  opacity: 0;
+  transform: translate3d(0, 18px, 0) scale(0.99);
+  transition:
+    opacity var(--motion-duration-enter) var(--motion-ease-out) var(--reveal-delay, 0ms),
+    transform var(--motion-duration-enter) var(--motion-ease-soft) var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.motion-reveal.is-revealed {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  will-change: auto;
+}
+
 /* ---- Empty State ---- */
 .empty-state {
   display: flex;
@@ -90,6 +114,61 @@ body {
   max-width: 480px;
   text-align: center;
   box-shadow: var(--shadow-card);
+}
+
+/* ---- Initial loading ---- */
+.loading-state {
+  background:
+    radial-gradient(circle at 50% 35%, rgba(167, 139, 250, 0.18), transparent 38%),
+    var(--clr-bg);
+}
+
+.loading-card {
+  width: min(440px, 100%);
+  padding: 32px;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(224, 231, 255, 0.88);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(12px);
+  text-align: center;
+  animation: loading-card-in 360ms var(--motion-ease-out) both;
+}
+
+.loading-mark {
+  width: 34px;
+  height: 34px;
+  margin: 0 auto 18px;
+  border: 3px solid var(--clr-muted);
+  border-top-color: var(--clr-primary);
+  border-radius: 50%;
+  animation: loading-spin 800ms linear infinite;
+}
+
+.loading-line {
+  margin: 0 auto;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(90deg, var(--clr-muted) 20%, #ffffff 50%, var(--clr-muted) 80%);
+  background-size: 200% 100%;
+  animation: loading-shimmer 1.15s ease-in-out infinite;
+}
+
+.loading-line--title {
+  width: min(210px, 70%);
+  height: 15px;
+}
+
+.loading-line--body {
+  width: min(152px, 48%);
+  height: 10px;
+  margin-top: 12px;
+}
+
+.loading-text {
+  display: block;
+  margin-top: 18px;
+  font-size: 13px;
+  color: var(--clr-text-secondary);
 }
 
 .empty-card h2 {
@@ -133,6 +212,20 @@ body {
   position: relative;
   overflow: hidden;
 }
+
+.report-header.is-revealed .report-title {
+  animation: soft-rise 380ms var(--motion-ease-out) 70ms both;
+}
+
+.report-header.is-revealed .meta-badge {
+  animation: soft-rise 320ms var(--motion-ease-out) both;
+}
+
+.report-header.is-revealed .meta-badge:nth-child(1) { animation-delay: 140ms; }
+.report-header.is-revealed .meta-badge:nth-child(2) { animation-delay: 180ms; }
+.report-header.is-revealed .meta-badge:nth-child(3) { animation-delay: 220ms; }
+.report-header.is-revealed .meta-badge:nth-child(4) { animation-delay: 260ms; }
+.report-header.is-revealed .meta-badge:nth-child(5) { animation-delay: 300ms; }
 
 .report-header::before {
   content: '';
@@ -223,6 +316,10 @@ body {
   padding: 16px 24px;
   background: linear-gradient(135deg, var(--clr-primary) 0%, var(--clr-primary-dark) 100%);
   position: relative;
+}
+
+.essay-header.motion-reveal {
+  transform: translate3d(0, 12px, 0);
 }
 
 .essay-header::after {
@@ -487,6 +584,60 @@ body {
   opacity: 0.7;
 }
 
+/* ---- Motion keyframes ---- */
+@keyframes soft-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes loading-card-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes loading-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes loading-shimmer {
+  to { background-position: -200% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .motion-reveal,
+  .motion-reveal.is-revealed {
+    opacity: 1;
+    transform: none;
+  }
+
+  .report-header .meta-badge,
+  .report-header .report-title {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /* ============================================
    PRINT STYLES — A4 竖版 (primary output)
    ============================================ */
@@ -503,6 +654,19 @@ body {
   body {
     background: white !important;
     color: black;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .motion-reveal,
+  .motion-reveal.is-revealed {
+    opacity: 1 !important;
+    transform: none !important;
   }
 
   .empty-state {

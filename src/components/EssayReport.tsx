@@ -26,7 +26,7 @@ export function EssayReport({
 }: EssayReportProps) {
   return (
     <section className={`essay-report essay-report--${type}`}>
-      <div className="essay-header">
+      <div className="essay-header motion-reveal" data-reveal="heading">
         <h2 className="essay-title">{title}</h2>
       </div>
 

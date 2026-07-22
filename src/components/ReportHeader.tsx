@@ -12,7 +12,7 @@ function MetaBadge({ label, text }: { label: string; text: string }) {
 
 export function ReportHeader({ meta }: { meta: ReportMeta }) {
   return (
-    <header className="report-header">
+    <header className="report-header motion-reveal" data-reveal="intro">
       <h1 className="report-title">
         <span className="title-en">English Essay Grading Report</span>
         <span className="title-zh">英语作文批阅报告</span>

@@ -22,6 +22,7 @@ npm run dev
 ```
 dist/
 ├── index.html          # 自包含 HTML（JS + CSS 已内联）
+├── sample-report.json  # 可直接注入的完整示例数据
 └── fonts/              # 3 个必需的 HarmonyOS Sans SC 字体
     ├── HarmonyOS_Sans_SC_Regular.ttf
     ├── HarmonyOS_Sans_SC_Medium.ttf
@@ -74,8 +75,9 @@ using Microsoft.Playwright;
 var distPath = Path.GetFullPath("path/to/SoftReport/dist");
 var htmlPath = Path.Combine(distPath, "index.html");
 
-// 读取报告 JSON
-var json = File.ReadAllText("report-data.json", Encoding.UTF8);
+// 示例：读取构建产物旁已生成的 JSON；生产环境替换为实际报告 JSON 路径即可
+var sampleDataPath = Path.Combine(distPath, "sample-report.json");
+var json = File.ReadAllText(sampleDataPath, Encoding.UTF8);
 
 await using var playwright = await Playwright.CreateAsync();
 await using var browser = await playwright.Chromium.LaunchAsync(new()
@@ -130,11 +132,10 @@ await page.PdfAsync(new()
 可使用项目自带的示例数据进行测试：
 
 ```bash
-# 将 sample-report.json 复制到 dist/ 目录
-copy sample-report.json dist\
+# npm run build 会将 public/sample-report.json 自动复制到下列位置
+dist/sample-report.json
 
-# 修改 C# 集成代码引用 dist/sample-report.json
-# 或直接将 dist/sample-report.json 作为 Playwright 注入源
+# C# 端直接读取该文件并通过 AddInitScriptAsync 注入即可
 ```
 
 ## 打印与分页

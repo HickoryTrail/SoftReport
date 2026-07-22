@@ -13,7 +13,7 @@ export function GrammarCorrection({ grammar }: { grammar?: GrammarInput }) {
   if (!grammar) return null;
 
   return (
-    <div className="section grammar-correction">
+    <div className="section grammar-correction motion-reveal" data-reveal="section">
       <h3 className="section-title">语法改错</h3>
       {typeof grammar === "string" ? (
         <DiffBlock html={grammar} />

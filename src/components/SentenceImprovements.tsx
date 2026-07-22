@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import type { SentenceImprovement } from "../types";
 
 export function SentenceImprovements({
@@ -8,11 +9,16 @@ export function SentenceImprovements({
   if (!items || items.length === 0) return null;
 
   return (
-    <div className="section sentence-improvements">
+    <div className="section sentence-improvements motion-reveal" data-reveal="section">
       <h3 className="section-title">语句提升</h3>
       <ol className="improvement-list">
         {items.map((item, i) => (
-          <li key={i} className="improvement-item">
+          <li
+            key={i}
+            className="improvement-item motion-reveal"
+            data-reveal="item"
+            style={{ "--reveal-delay": `${i * 45}ms` } as CSSProperties}
+          >
             <div className="improvement-row">
               <span className="improvement-label">原句</span>
               <del className="improvement-original">{item.original}</del>

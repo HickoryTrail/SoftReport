@@ -13,7 +13,7 @@ export function OptimizedEssay({ data, type }: OptimizedEssayProps) {
   const cwData = data as OptimizedEssayCW;
 
   return (
-    <div className="section optimized-essay">
+    <div className="section optimized-essay motion-reveal" data-reveal="section">
       <h3 className="section-title">改后佳作</h3>
       <div className="optimized-body">
         <div className="optimized-paragraphs">
