@@ -76,14 +76,14 @@
 - **分页**: 两篇作文报告之间 `page-break-before: always`
 - **内容保护**: 节标题+内容 `page-break-inside: avoid`
 - **屏幕元素隐藏**: 阴影、背景渐变、交互态在打印时取消
-- **Diff 色彩保留**: 打印时 `<em>` / `<strong>` 保留红绿色 + 加边框辅助黑白阅读
+- **Diff 色彩保留**: 打印时 `<del>` / `<strong>` 保留红绿色 + 加边框辅助黑白阅读
 
 ## Diff 标注样式
 
-语法改错使用 `<em>` 和 `<strong>` 标记，CSS 渲染如下：
+语法改错使用 `<del>` 和 `<strong>` 标记，CSS 渲染如下：
 
 ```css
-em {
+del {
   color: #DC2626;
   text-decoration: line-through;
   background: #FEE2E2;
@@ -100,7 +100,7 @@ strong {
 }
 ```
 
-打印时额外添加边框：`<em>` 使用虚线红色边框，`<strong>` 使用实线绿色边框，确保黑白打印时仍可区分。
+打印时额外添加边框：`<del>` 使用虚线红色边框，`<strong>` 使用实线绿色边框，确保黑白打印时仍可区分。
 
 ## 组件树
 

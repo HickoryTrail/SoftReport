@@ -94,7 +94,7 @@ npm run preview
 - 主要用途：A4 竖版 PDF 打印
 - 打印样式在 App.css 的 @media print 中定义
 - 段落级别分页控制：page-break-before: always 分隔两篇作文报告
-- Diff 标注（<em> / <strong>）在打印时保留色彩 + 加边框辅助 B&W 阅读
+- Diff 标注（<del> / <strong>）在打印时保留色彩 + 加边框辅助 B&W 阅读
 
 ## 设计规范
 

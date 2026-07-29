@@ -407,7 +407,7 @@ body {
 }
 
 /* Diff markup - preserve exact styling */
-.diff-text em {
+.diff-text del {
   color: var(--clr-diff-del-text);
   text-decoration: line-through;
   background: var(--clr-diff-del-bg);
@@ -831,7 +831,7 @@ body {
     print-color-adjust: exact;
   }
 
-  .diff-text em {
+  .diff-text del {
     color: #B91C1C !important;
     background: #FEE2E2 !important;
     border: 0.5pt dashed #DC2626;
